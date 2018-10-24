@@ -1,8 +1,0 @@
-"0","L3T <- data.frame(LC[,c(1,2)]) %>%"
-"0","  `colnames<-`(c(""Cancer"",""Sex"")) %>%"
-"0","  table() %>%"
-"0","  data.frame()"
-"0","ggplot(L3T,mapping = aes(x = Sex,y = Freq,"
-"0","                         fill = Cancer)) +"
-"0","  geom_bar(stat = ""identity"", width = 0.5) +"
-"0","  scale_fill_brewer(palette = ""Blues"")"

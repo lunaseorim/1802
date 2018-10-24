@@ -1,2 +1,0 @@
-"0","ggplot(LC, aes(x = Age, y = Smoking, color = LC)) +"
-"0","  geom_point()"
