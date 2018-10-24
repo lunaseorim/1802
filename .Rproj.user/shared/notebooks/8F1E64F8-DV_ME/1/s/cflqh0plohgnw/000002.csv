@@ -1,0 +1,8 @@
+"0","  ggplot(L3T_1,aes(x=interaction(Cancer,Sex),"
+"0","                   y=percent_cancer,"
+"0","                   fill=Cancer)) +"
+"0","    geom_bar(stat = ""identity"",width = 0.8) +"
+"0","    ylim(0,max(L3T_1$percent_cancer)*1.05) +"
+"0","    geom_text(aes(label = paste0(round(L3T_1$percent_cancer,0),""%"")),"
+"0","              vjust=-0.5, color = ""Brown"") +"
+"0","    scale_fill_brewer(palette = ""Blues"")"

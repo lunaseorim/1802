@@ -1,0 +1,8 @@
+"0","knitr::opts_chunk$set(echo = TRUE)"
+"0","#install.packages(""ggplot2"")"
+"0","#install.packages(""dplyr"")"
+"0","library(ggplot2)"
+"0","library(plyr)"
+"0","library(dplyr)"
+"0","library(pander)"
+"0","library(knitr)"
