@@ -7,8 +7,6 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-#install.packages("ggplot2")
-#install.packages("dplyr")
 library(ggplot2)
 library(plyr)
 library(dplyr)
@@ -20,20 +18,21 @@ library(knitr)
 read.csv를 이용해 lung-cancer.csv 파일을 불러온다.
 
 ```{r data, echo=FALSE}
-LC <- read.csv("data/lung-cancer.csv",
-               stringsAsFactors = FALSE)
+LC <- read.csv("../data/lung-cancer.csv",
+               stringsAsFactors = F)
 str(LC)
 ```
 
 ## Problem 1
-폐암여부의 시각화
+폐암여부를 시각화 하시오.
+
 ```{r problem 1,  echo=FALSE}
 L1T <- table(LC[ ,1]) %>%
   data.frame() %>%
   `colnames<-`(c("Cancer","Freq"))
 
 ggplot(L1T,aes(x = Cancer, y = Freq)) +
-  geom_bar(stat = "identity", width = 0.4) +
+  geom_bar(stat = "identity", fill = "lightblue", colour = "black",width = 0.4) +
   ylim(0, max(L1T$Freq) * 1.05)
 
 ggplot(LC, aes(x = Age, y = Smoking, color = LC)) +
@@ -42,12 +41,10 @@ ggplot(LC, aes(x = Age, y = Smoking, color = LC)) +
 ```
 
 ## Problem 2
-흡연여부와 암발생에 대한 그래프이다.
-
+흡연기간과 폐암여부의 관련성을 살펴볼 수 있는 시각화를 시도해보시오.
 ```{r problem2, echo=FALSE}
-data.frame("LungCancer" = LC[c(1:49), 4],
-             "NoCancer" = LC[c(50:147),4 ]) %>%
-  summary
+
+pander(tapply(LC$Smoking, LC$LC, summary))
 
 ggplot(LC,aes(x=LC,y=Smoking,
               fill=Smoking)) +
@@ -56,8 +53,7 @@ ggplot(LC,aes(x=LC,y=Smoking,
 ```
 
 ## Problem 3
-성별과 암발생간 차이를 나타낸 그래프이다.
-
+성별과 폐암여부의 관련성을 살펴볼 수 잇는 시각화를 시도해보시오.
 ```{r problem3,echo=FALSE}
 L3T <- data.frame(LC[,c(1,2)]) %>%
   `colnames<-`(c("Cancer","Sex")) %>%
@@ -66,12 +62,12 @@ L3T <- data.frame(LC[,c(1,2)]) %>%
 
 ggplot(L3T,mapping = aes(x = Sex,y = Freq,
                          fill = Cancer)) +
-  geom_bar(stat = "identity", width = 0.5) +
+  geom_bar(stat = "identity", width = 0.5, colour = "black") +
   scale_fill_brewer(palette = "Blues")
 ```
 
 `ddply("Sex", transform, percent_cancer = Freq / sum(Freq) *100)`
-를 사용해 성별간 암환자 비율을 계산해 퍼센트로 나타낸후
+를 사용해 성별간 폐암여부를 퍼센트로 나타낸후
 `geom_bar`로 그린 그래프이다.
 
 
@@ -88,7 +84,7 @@ ggplot(L3T_1, aes(x = Sex, y = percent_cancer, fill = Cancer)) +
   ylim(0,105)
 ``` 
 
- ggplot안에 aes(x좌표)에서 `interaction` 함수를 사용해
+ ggplot안에 aes(x좌표)에서 `interaction` 을 사용해
  성별과 암발생을 나눠 그린 그래프이다.
  
 ```{r DV3, echo=FALSE}
