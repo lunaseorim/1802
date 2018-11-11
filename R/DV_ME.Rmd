@@ -15,7 +15,6 @@ library(knitr)
 ```
 
 ## Read Data File
-read.csv를 이용해 lung-cancer.csv 파일을 불러온다.
 
 ```{r data, echo=FALSE}
 LC <- read.csv("../data/lung-cancer.csv",
@@ -48,13 +47,13 @@ pander(tapply(LC$Smoking, LC$LC, summary))
 
 ggplot(LC,aes(x=LC,y=Smoking,
               fill=Smoking)) +
-  geom_boxplot() 
+  geom_boxplot()
 
 ```
 
 ## Problem 3
 성별과 폐암여부의 관련성을 살펴볼 수 잇는 시각화를 시도해보시오.
-```{r problem3,echo=FALSE}
+```{r problem3_1,echo=FALSE}
 L3T <- data.frame(LC[,c(1,2)]) %>%
   `colnames<-`(c("Cancer","Sex")) %>%
   table() %>%
@@ -62,7 +61,7 @@ L3T <- data.frame(LC[,c(1,2)]) %>%
 
 ggplot(L3T,mapping = aes(x = Sex,y = Freq,
                          fill = Cancer)) +
-  geom_bar(stat = "identity", width = 0.5, colour = "black") +
+  geom_bar(stat = "identity", width = 0.5) +
   scale_fill_brewer(palette = "Blues")
 ```
 
@@ -71,7 +70,7 @@ ggplot(L3T,mapping = aes(x = Sex,y = Freq,
 `geom_bar`로 그린 그래프이다.
 
 
-```{r DV3_2,echo=FALSE}
+```{r Problem3_2,echo=FALSE}
 L3T_1 <- L3T %>% 
   ddply("Sex", transform, percent_cancer = Freq / sum(Freq) *100)
 
@@ -87,7 +86,7 @@ ggplot(L3T_1, aes(x = Sex, y = percent_cancer, fill = Cancer)) +
  ggplot안에 aes(x좌표)에서 `interaction` 을 사용해
  성별과 암발생을 나눠 그린 그래프이다.
  
-```{r DV3, echo=FALSE}
+```{r Problem3_3, echo=FALSE}
 
   ggplot(L3T_1,aes(x=interaction(Cancer,Sex),
                    y=percent_cancer,

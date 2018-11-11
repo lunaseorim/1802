@@ -11,33 +11,26 @@ m_df <- read_lines('data/moon.txt') %>%
   as_tibble %>%
   select(3, 1)
 
- m_df %>%
+ m <- m_df %>%
   mutate(noun=str_match(value, '([가-힣]+)/N')[,2]) %>%
-  na.omit %>% 
-  filter(str_length(noun)>=2) %>% 
-  count(noun, sort=TRUE) %>% 
-  filter(n>=2) %>% 
+  na.omit %>%
+  filter(str_length(noun)>=2)
+  count(noun, sort=TRUE)
+  
   wordcloud2(fontFamily = '나눔바른고딕',
               minRotation=0, maxRotation=0)
-
-russia1 <- read_lines('data/russia1.txt') %>% 
-   SimplePos09 %>% 
-   melt %>% 
-   as_tibble %>%
-   select(3, 1)
- 
-R1 <- russia1 %>%
-   mutate(noun=str_match(value, '([가-힣]+)/N')[,2]) %>%
-   na.omit %>% 
-   filter(str_length(noun)>=2) %>% 
-   count(noun, sort=TRUE) %>% 
-   filter(n>=2)
-   wordcloud2(R1,fontFamily = '나눔바른고딕',
-              minRotation=0, maxRotation=0)
- 
-R1[33,1] <- "한국"
-
-R1 %>%
+table(t(m))
+  
+  
+ma %>%
+  count(noun,sort = T) %>%
+  filter(n>=2) %>%
   wordcloud2(fontFamily = '나눔바른고딕',
-             minRotation = 0, maxRotation = 0)
+             minRotation=0, maxRotation=0)
 
+
+write.csv(m, "data/wordcloud2.csv")
+
+word2 <- read.csv("data/wordcloud2.csv")
+
+table(word2)
