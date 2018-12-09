@@ -1,0 +1,99 @@
+---
+title: "Data Visualization_Midterm"
+author: "20143311 김희수"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(pander)
+library(knitr)
+```
+
+## Read Data File
+
+```{r data, echo=FALSE}
+LC <- read.csv("../data/lung-cancer.csv",
+               stringsAsFactors = F)
+str(LC)
+```
+
+## Problem 1
+폐암여부를 시각화 하시오.
+
+```{r problem 1,  echo=FALSE}
+L1T <- table(LC[ ,1]) %>%
+  data.frame() %>%
+  `colnames<-`(c("Cancer","Freq"))
+
+ggplot(L1T,aes(x = Cancer, y = Freq)) +
+  geom_bar(stat = "identity", fill = "lightblue", colour = "black",width = 0.4) +
+  ylim(0, max(L1T$Freq) * 1.05)
+
+ggplot(LC, aes(x = Age, y = Smoking, color = LC)) +
+  geom_point()
+
+```
+
+## Problem 2
+흡연기간과 폐암여부의 관련성을 살펴볼 수 있는 시각화를 시도해보시오.
+```{r problem2, echo=FALSE}
+
+pander(tapply(LC$Smoking, LC$LC, summary))
+
+ggplot(LC,aes(x=LC,y=Smoking,
+              fill=Smoking)) +
+  geom_boxplot()
+
+```
+
+## Problem 3
+성별과 폐암여부의 관련성을 살펴볼 수 잇는 시각화를 시도해보시오.
+```{r problem3_1,echo=FALSE}
+L3T <- data.frame(LC[,c(1,2)]) %>%
+  `colnames<-`(c("Cancer","Sex")) %>%
+  table() %>%
+  data.frame()
+
+ggplot(L3T,mapping = aes(x = Sex,y = Freq,
+                         fill = Cancer)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  scale_fill_brewer(palette = "Blues")
+```
+
+`ddply("Sex", transform, percent_cancer = Freq / sum(Freq) *100)`
+를 사용해 성별간 폐암여부를 퍼센트로 나타낸후
+`geom_bar`로 그린 그래프이다.
+
+
+```{r Problem3_2,echo=FALSE}
+L3T_1 <- L3T %>% 
+  ddply("Sex", transform, percent_cancer = Freq / sum(Freq) *100)
+
+ggplot(L3T_1, aes(x = Sex, y = percent_cancer, fill = Cancer)) +
+  geom_bar(stat = "identity",width = 0.5) +
+  geom_text(aes(label = paste0(round(L3T_1$percent_cancer,0),"%")),
+            position = position_stack(vjust=1.05),
+            size=3.8, color = "Brown") +
+  scale_fill_brewer(palette = "Blues") +
+  ylim(0,105)
+``` 
+
+ ggplot안에 aes(x좌표)에서 `interaction` 을 사용해
+ 성별과 암발생을 나눠 그린 그래프이다.
+ 
+```{r Problem3_3, echo=FALSE}
+
+  ggplot(L3T_1,aes(x=interaction(Cancer,Sex),
+                   y=percent_cancer,
+                   fill=Cancer)) +
+    geom_bar(stat = "identity",width = 0.8) +
+    ylim(0,max(L3T_1$percent_cancer)*1.05) +
+    geom_text(aes(label = paste0(round(L3T_1$percent_cancer,0),"%")),
+              vjust=-0.5, color = "Brown") +
+    scale_fill_brewer(palette = "Blues")
+```
