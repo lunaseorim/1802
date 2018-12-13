@@ -1,0 +1,106 @@
+---
+title: "네이버뉴스 댓글 감성분석"
+author: "20143311 김희수"
+date: "2018년 11월 26일"
+output: html_document
+---
+
+```{r package}
+source("https://install-github.me/forkonlp/DNH4")
+#출처 : https://forkonlp.github.io/DNH4/
+library(DNH4)
+remotes::install_github("forkonlp/N2H4")
+comments <- N2H4::getComment(turl = "https://news.naver.com/main/read.nhn?mode=LSD&mid=sec&sid1=001&oid=001&aid=0010490434")
+
+comments$contents
+
+```
+
+## 머니투데이, 文 "성장률·GDP 보다 삶의질"-OECD "韓 경제 괜찮은 성적"
+### 댓글 2천여개 크롤링
+
+```{r cars}
+getContent("http://v.media.daum.net/v/20181126093049837")
+setwd("")
+if (!require("devtools")) install.packages("devtools")
+devtools::install_github("forkonlp/N2H4")
+install.packages("iterators")
+library(N2H4)
+install.packages("selectr")
+library(curl)
+library(rvest)
+
+
+
+# N2H4 패키지 구동시 요구되는 실행환경
+sessionInfo()
+
+# 수집하고자 하는 뉴스 기사의 url
+url = "https://news.naver.com/main/read.nhn?m_view=1&includeAllCount=true&mode=LSD&mid=sec&sid1=001&oid=001&aid=0010490434"
+com <- getComment(url,page = 1)
+
+
+# 현재 시각과 character 변수화
+t <- Sys.time()
+cat(t,"\n")
+t <- strftime(t,"%Y-%m-%d %H:%M:%S")
+
+# 지정된 url로부터 댓글 데이터 수집.  lst[,-46] 부분은 NA 값이 들어오는 필드여서 임의로 제거.
+comm <- getComment(turl = url)
+comments <- comm$result$count$comment
+comm <- getComment(turl = url , pageSize = 100, page = 1)
+lst <- comm$result$commentList
+lst <- as.data.frame(lst)
+lst <- lst[,-46]
+head(lst$contents)
+
+comm <- getComment(url)$result$commentList[[1]]
+
+# 반복문 예제
+starttime <- vector()
+
+# url 리스트를 csv나 텍스트 파일 형태로 가져올 경우
+url <- readLines("urllink.csv")
+
+come <- function(a,x) {
+  getComment(turl = a,
+             pageSize = 100,
+             page = x)
+  
+}
+no2 <- come(url,2)[21]
+no3 <- come(url,3)[21]
+no4 <- come(url,4)[21]
+
+come
+
+aa <- for (i in 1:5) {
+  come(url,i)
+  as.data.frame(.)
+}
+
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure}
+aa <- getComment(turl = url,
+                 pageSize = 100,
+                 page = 1,
+                 type = "df")
+
+bb <- for (i in 1:2) {
+  data.frame(
+    getComment(turl = url,
+               pageSize = 100,
+               page = i)
+  )
+}
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

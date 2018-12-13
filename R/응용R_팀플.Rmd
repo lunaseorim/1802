@@ -1,0 +1,131 @@
+---
+title: "응용R 팀플"
+author: "20143311 김희수"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(plyr)
+library(dplyr)
+library(magrittr)
+library(ggmap)
+library(ggplot2)
+library(raster)
+library(rgeos)
+library(maptools)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data Preprocessing
+
+```{r Data Preprocessing, echo=T}
+
+A01 <- read.csv("data/전체데이터.csv")
+
+A01$권역 %<>%
+  factor(labels = c("서울",
+                          "인천/경기",
+                          "충청권",
+                          "호남권",
+                          "영남권",
+                          "강원/제주"),
+         levels = 1:6)
+A01$업종 %<>%
+  factor(labels = c("농림어업",
+                 "제조업",
+                "전자상거래업",
+                "출판, 영상, 방송통신, 정보서비스업",
+                "기타금융지원서비스업",
+                "전문,과학, 기술서비스업",
+                "사업시설관리, 사업지원서비스업",
+                "교육서비스업",
+                "창작, 예술 및 여가관련 서비스업",
+                "수리업"),
+                levels = 1:10)
+
+A01$환경1순위 %<>%
+  factor(labels = c("전혀 그렇지 않다",
+                                "그렇지 않다",
+                                "대체적으로 그렇지 않다",
+                                "보통이다",
+                                "대체적으로 그렇다",
+                                "그렇다",
+                                "매우 그렇다"),
+                      levels = 1:7)
+
+A01$환경2순위 %<>%
+  factor(labels = c("전혀 그렇지 않다",
+                              "그렇지 않다",
+                              "대체적으로 그렇지 않다",
+                              "보통이다",
+                              "대체적으로 그렇다",
+                              "그렇다",
+                              "매우 그렇다"),
+                   levels = 1:7)
+
+A01$동기1순위 %<>%
+  factor(labels = c("나의 적성과 능력을 발휘하기 위해서",
+                              "높은 소득을 얻을 수 있어서",
+                              "정부의 창업지원 정책의 영향을 받아서",
+                              "생계 유지를 위해서",
+                              "기타"),
+                   levels = 1:5)
+
+A01$동기2순위 %<>% 
+  factor(labels = c("나의 적성과 능력을 발휘하기 위해서",
+                              "높은 소득을 얻을 수 있어서",
+                              "정부의 창업지원 정책의 영향을 받아서",
+                              "생계 유지를 위해서",
+                              "기타"),
+                   levels = 1:5)
+
+A01 %>%
+  str
+```
+
+## Average by region 
+
+```{r Average by region , echo=TRUE}
+means <- ddply(A01,~권역,summarise,소득평균 = round(mean(대표자소득)))
+
+#시각화를위하여 id부여
+A02 <- means[c(1,5,5,2,4,3,5,3,2,6,3,3,4,4,5,5,6),] %>%
+  `row.names<-`(1:17) 
+A02$id <- 0:16
+
+#창업환경에 대하여..
+A03 <-A01$환경1순위 %>%
+  table %>%
+  data.frame %>%
+  `colnames<-` (c("응답","Freq"))
+
+
+```
+
+## Data visualization
+
+```{r Data visualization, echo=TRUE}
+##플랏
+ggplot(A03,aes(x=응답,y=Freq)) +
+  geom_bar(stat = "identity",fill = 'skyblue') +
+#  ggtitle(label = "환경응답1번") 
+#  theme(axis.text.x = element_text(angle = 35, hjust = 1),
+        plot.title=element_text(family='나눔바른고딕', size=30, color="skyblue"))
+
+##지도시각화
+korea <- shapefile("data/TL_SCCO_SIG.shp")
+korea <- spTransform(korea,CRS("+proj=longlat"))
+korea_map <- fortify(korea)
+merge_result <- merge(korea_map,A02,by='id')
+
+p <- ggplot() +
+  geom_polygon(data = merge_result,aes(x=long,y=lat,group=group,
+                                       fill = 소득평균))
+
+p + 
+  scale_fill_gradient(low = 'white',high='orange',
+                      limits = c(180,240))
+
+```
+
