@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r Data Preprocessing, echo=T}
 
-A01 <- read.csv("data/전체데이터.csv")
+A01 <- read.csv("../data/전체데이터.csv")
 
 A01$권역 %<>%
   factor(labels = c("서울",
@@ -87,12 +87,17 @@ A01 %>%
 ## Average by region 
 
 ```{r Average by region , echo=TRUE}
-means <- ddply(A01,~권역,summarise,소득평균 = round(mean(대표자소득)))
 
-#시각화를위하여 id부여
-A02 <- means[c(1,5,5,2,4,3,5,3,2,6,3,3,4,4,5,5,6),] %>%
+avg_income <- A01 %>%
+  filter(!is.na(대표자소득)) %>%
+  group_by(권역, 권역) %>%
+  summarise(소득평균 = round(mean(대표자소득)))
+
+#지도 시각화를 위하여 id부여
+A02 <- avg_income[c(1,5,5,2,4,3,5,3,2,6,3,3,4,4,5,5,6),] %>%
   `row.names<-`(1:17) 
 A02$id <- 0:16
+
 
 #창업환경에 대하여..
 A03 <-A01$환경1순위 %>%
@@ -100,32 +105,54 @@ A03 <-A01$환경1순위 %>%
   data.frame %>%
   `colnames<-` (c("응답","Freq"))
 
+#동기에대하여...
+A04 <-A01$동기1순위 %>%
+  table %>%
+  data.frame %>%
+  `colnames<-` (c("응답","Freq"))
+
+#권역별 업종
+
+A05 <- A01$업종 %>%
+  tapply(INDEX = A01$권역 ,FUN = summary) %>%
+  tbl_df %>%
+  data.frame %>%
+  `rownames<-`(levels(A01$업종))
+
+
+kableExtra::kable(A05)
+
+
+
 
 ```
 
 ## Data visualization
 
 ```{r Data visualization, echo=TRUE}
-##플랏
+##막대그래프
 ggplot(A03,aes(x=응답,y=Freq)) +
   geom_bar(stat = "identity",fill = 'skyblue') +
+theme(axis.text.x = element_text(angle = 30, hjust = 1,
+                                 size = 9))
+      
 #  ggtitle(label = "환경응답1번") 
-#  theme(axis.text.x = element_text(angle = 35, hjust = 1),
-        plot.title=element_text(family='나눔바른고딕', size=30, color="skyblue"))
+#  plot.title=element_text(family='나눔바른고딕',size=30,color="skyblue)
 
 ##지도시각화
-korea <- shapefile("data/TL_SCCO_SIG.shp")
+korea <- shapefile("../data/TL_SCCO_CTPRVN.shp")
 korea <- spTransform(korea,CRS("+proj=longlat"))
 korea_map <- fortify(korea)
 merge_result <- merge(korea_map,A02,by='id')
 
 p <- ggplot() +
-  geom_polygon(data = merge_result,aes(x=long,y=lat,group=group,
-                                       fill = 소득평균))
+  geom_polygon(data = merge_result,
+               aes(x=long,y=lat,group=group,fill = 소득평균))
 
 p + 
   scale_fill_gradient(low = 'white',high='orange',
-                      limits = c(180,240))
+                      limits = c(180,240)) +
+  coord_fixed(ratio = 1.2)
 
 ```
 
