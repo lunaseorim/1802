@@ -20,68 +20,127 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Data Preprocessing
 
 ```{r Data Preprocessing, echo=T}
-
 A01 <- read.csv("../data/전체데이터.csv")
 
 A01$권역 %<>%
   factor(labels = c("서울",
-                          "인천/경기",
-                          "충청권",
-                          "호남권",
-                          "영남권",
-                          "강원/제주"),
+                    "인천/경기",
+                    "충청권",
+                    "호남권",
+                    "영남권",
+                    "강원/제주"),
          levels = 1:6)
-A01$업종 %<>%
-  factor(labels = c("농림어업",
-                 "제조업",
-                "전자상거래업",
-                "출판, 영상, 방송통신, 정보서비스업",
-                "기타금융지원서비스업",
-                "전문,과학, 기술서비스업",
-                "사업시설관리, 사업지원서비스업",
-                "교육서비스업",
-                "창작, 예술 및 여가관련 서비스업",
-                "수리업"),
-                levels = 1:10)
 
-A01$환경1순위 %<>%
-  factor(labels = c("전혀 그렇지 않다",
-                                "그렇지 않다",
-                                "대체적으로 그렇지 않다",
-                                "보통이다",
-                                "대체적으로 그렇다",
-                                "그렇다",
-                                "매우 그렇다"),
-                      levels = 1:7)
-
-A01$환경2순위 %<>%
-  factor(labels = c("전혀 그렇지 않다",
-                              "그렇지 않다",
-                              "대체적으로 그렇지 않다",
-                              "보통이다",
-                              "대체적으로 그렇다",
-                              "그렇다",
-                              "매우 그렇다"),
-                   levels = 1:7)
-
-A01$동기1순위 %<>%
+A01$동기1 %<>%
   factor(labels = c("나의 적성과 능력을 발휘하기 위해서",
-                              "높은 소득을 얻을 수 있어서",
-                              "정부의 창업지원 정책의 영향을 받아서",
-                              "생계 유지를 위해서",
-                              "기타"),
-                   levels = 1:5)
+                    "높은 소득을 얻을 수 있어서",
+                    "정부의 창업지원 정책의 영향을 받아서",
+                    "생계 유지를 위해서",
+                    "기타"),
+         levels = 1:5)
 
-A01$동기2순위 %<>% 
+A01$동기2 %<>% 
   factor(labels = c("나의 적성과 능력을 발휘하기 위해서",
-                              "높은 소득을 얻을 수 있어서",
-                              "정부의 창업지원 정책의 영향을 받아서",
-                              "생계 유지를 위해서",
-                              "기타"),
-                   levels = 1:5)
+                    "높은 소득을 얻을 수 있어서",
+                    "정부의 창업지원 정책의 영향을 받아서",
+                    "생계 유지를 위해서",
+                    "기타"),
+         levels = 1:5)
 
-A01 %>%
-  str
+A01$창업애로사항1 %<>%
+  factor(labels = c("기술개발",
+                    "자금조달",
+                    "업종선정",
+                    "사업타당성분석",
+                    "행정절차",
+                    "상품/서비스 개발",
+                    "사무실/작업공간 확보",
+                    "사업/시장정보 획득",
+                    "경영교육",
+                    "인력확보",
+                    "홍보/마케팅",
+                    "기타"),
+         levels = 1:12)
+
+A01$창업애로사항2 %<>%
+  factor(labels = c("기술개발",
+                    "자금조달",
+                    "업종선정",
+                    "사업타당성분석",
+                    "행정절차",
+                    "상품/서비스 개발",
+                    "사무실/작업공간 확보",
+                    "사업/시장정보 획득",
+                    "경영교육",
+                    "인력확보",
+                    "홍보/마케팅",
+                    "기타"),
+         levels = 1:12)
+
+A01$경영애로사항1 %<>%
+  factor(labels = c("판로확보(거래처)",
+                    "시장정보력 부족",
+                    "운영자금 부족",
+                    "기술력 부족",
+                    "홍보 및 마케팅",
+                    "해외시장 진출 및 개척",
+                    "인력 부족(혼자 업무)",
+                    "인적 네트워크 부족",
+                    "부가세 등 세금",
+                    "업체간 경쟁 심화",
+                    "경기불황",
+                    "기타"),
+         levels = 1:12)
+
+A01$경영애로사항2 %<>%
+  factor(labels = c("판로확보(거래처)",
+                    "시장정보력 부족",
+                    "운영자금 부족",
+                    "기술력 부족",
+                    "홍보 및 마케팅",
+                    "해외시장 진출 및 개척",
+                    "인력 부족(혼자 업무)",
+                    "인적 네트워크 부족",
+                    "부가세 등 세금",
+                    "업체간 경쟁 심화",
+                    "경기불황",
+                    "기타"),
+         levels = 1:12)
+
+A01$필요정책1 %<>%
+  factor(labels = c("창업절차 간소화",
+                    "각종 창업 부담금 완화",
+                    "실패 기업인 재기 지원, 재창업 활성화",
+                    "창업자금(융자, 보증, 투자) 지원",
+                    "세금 감면 지원",
+                    "R&D(기술개발, 인증·특허, 기술이전) 지원",
+                    "시제품 제작(제품디자인, 금형) 지원",
+                    "마케팅/홍보 지원",
+                    "글로벌 진출 지원",
+                    "신규 채용인력 인건비 지원",
+                    "창업/경영 컨설팅 및 멘토링 지원",
+                    "공간제공 지원",
+                    "시설·장비(임대료, 사용료 등) 지원",
+                    "창업관련 교육지원(기업가정신, 경영 등)"),
+         levels = 1:14)
+
+A01$필요정책2 %<>%
+  factor(labels = c("창업절차 간소화",
+                    "각종 창업 부담금 완화",
+                    "실패 기업인 재기 지원, 재창업 활성화",
+                    "창업자금(융자, 보증, 투자) 지원",
+                    "세금 감면 지원",
+                    "R&D(기술개발, 인증·특허, 기술이전) 지원",
+                    "시제품 제작(제품디자인, 금형) 지원",
+                    "마케팅/홍보 지원",
+                    "글로벌 진출 지원",
+                    "신규 채용인력 인건비 지원",
+                    "창업/경영 컨설팅 및 멘토링 지원",
+                    "공간제공 지원",
+                    "시설·장비(임대료, 사용료 등) 지원",
+                    "창업관련 교육지원(기업가정신, 경영 등)"),
+         levels = 1:14)
+
 ```
 
 ## Average by region 
@@ -89,38 +148,60 @@ A01 %>%
 ```{r Average by region , echo=TRUE}
 
 avg_income <- A01 %>%
-  filter(!is.na(대표자소득)) %>%
+  filter(!is.na(월평균소득)) %>%
   group_by(권역, 권역) %>%
-  summarise(소득평균 = round(mean(대표자소득)))
+  summarise(소득평균 = round(mean(월평균소득)))
 
 #지도 시각화를 위하여 id부여
 A02 <- avg_income[c(1,5,5,2,4,3,5,3,2,6,3,3,4,4,5,5,6),] %>%
   `row.names<-`(1:17) 
 A02$id <- 0:16
 
-
-#창업환경에 대하여..
-A03 <-A01$환경1순위 %>%
+#창업동기
+A03_1 <-A01$동기1 %>%
   table %>%
   data.frame %>%
   `colnames<-` (c("응답","Freq"))
 
-#동기에대하여...
-A04 <-A01$동기1순위 %>%
+A03_2 <-A01$동기2 %>%
   table %>%
   data.frame %>%
   `colnames<-` (c("응답","Freq"))
 
-#권역별 업종
 
-A05 <- A01$업종 %>%
-  tapply(INDEX = A01$권역 ,FUN = summary) %>%
-  tbl_df %>%
+
+#창업애로사항
+A04_1 <-A01$창업애로사항1 %>%
+  table %>%
   data.frame %>%
-  `rownames<-`(levels(A01$업종))
+  `colnames<-` (c("응답","Freq"))
 
+A04_2 <-A01$창업애로사항2 %>%
+  table %>%
+  data.frame %>%
+  `colnames<-` (c("응답","Freq"))
 
-kableExtra::kable(A05)
+#경영애로사항
+A05_1 <-A01$경영애로사항1 %>%
+  table %>%
+  data.frame %>%
+  `colnames<-` (c("응답","Freq"))
+
+A05_2 <-A01$경영애로사항2 %>%
+  table %>%
+  data.frame %>%
+  `colnames<-` (c("응답","Freq"))
+
+#필요정책
+A06_1 <-A01$필요정책1 %>%
+  table %>%
+  data.frame %>%
+  `colnames<-` (c("응답","Freq"))
+
+A06_2 <-A01$필요정책2 %>%
+  table %>%
+  data.frame %>%
+  `colnames<-` (c("응답","Freq"))
 
 
 
@@ -130,11 +211,58 @@ kableExtra::kable(A05)
 ## Data visualization
 
 ```{r Data visualization, echo=TRUE}
-##막대그래프
-ggplot(A03,aes(x=응답,y=Freq)) +
-  geom_bar(stat = "identity",fill = 'skyblue') +
-theme(axis.text.x = element_text(angle = 30, hjust = 1,
-                                 size = 9))
+#막대그래프
+p1 <- ggplot(A03_1,aes(x=응답,y=Freq,fill=응답)) +
+  geom_bar(stat = "identity",width = 0.6,show.legend = F) + 
+  coord_flip() +
+  ylab("") +
+  xlab("")
+
+p2 <- ggplot(A03_2,aes(x=응답,y=Freq,fill=응답)) +
+  geom_bar(stat = "identity",width = 0.6,show.legend = F) +
+  coord_flip() +
+  xlab("")
+
+grid.arrange(p1,p2, nrow=2, ncol=1)
+
+
+p3 <- ggplot(A04_1,aes(x=응답,y=Freq,fill=응답)) +
+  geom_bar(stat = "identity",width = 0.6,show.legend = F) + 
+  coord_flip() +
+  ylab("") +
+  xlab("")
+p4 <- ggplot(A04_2,aes(x=응답,y=Freq,fill=응답)) +
+  geom_bar(stat = "identity",width = 0.6,show.legend = F) + 
+  coord_flip()
+
+grid.arrange(p3,p4, nrow=2, ncol=1)
+
+p5 <- ggplot(A05_1,aes(x=응답,y=Freq,fill=응답)) +
+  geom_bar(stat = "identity",width = 0.6,show.legend = F) + 
+  coord_flip() +
+  ylab("") +
+  xlab("")
+p6 <- ggplot(A05_2,aes(x=응답,y=Freq,fill=응답)) +
+  geom_bar(stat = "identity",width = 0.6,show.legend = F) + 
+  coord_flip() +
+  xlab("")
+
+grid.arrange(p5,p6, nrow=2, ncol=1)
+
+p7 <- ggplot(A06_1,aes(x=응답,y=Freq,fill=응답)) +
+  geom_bar(stat = "identity",width = 0.6,show.legend = F) + 
+  coord_flip() +
+  ylab("") +
+  xlab("")
+ggplot(A06_2,aes(x=응답,y=Freq,fill=응답)) +
+  geom_bar(stat = "identity",width = 0.6,show.legend = F) + 
+  coord_flip() +
+  xlab("")
+
+grid.arrange(p7,p8, nrow=2, ncol=1)
+
+
+
       
 #  ggtitle(label = "환경응답1번") 
 #  plot.title=element_text(family='나눔바른고딕',size=30,color="skyblue)
